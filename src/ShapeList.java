@@ -6,16 +6,23 @@ public class ShapeList
 {
     private List<IShape> shapes;
     private boolean stopped;
+    private int maxSize;
 
-    public ShapeList()
+    public ShapeList(int maxSize)
     {
         shapes = new ArrayList<IShape>();
         stopped = false;
+        this.maxSize = Math.max(0, maxSize);
     }
 
     public boolean stopped()
     {
         return stopped;
+    }
+
+    public boolean isFull()
+    {
+        return this.maxSize == shapes.size();
     }
 
     public void stop() 
@@ -80,7 +87,7 @@ public class ShapeList
         return shapes.size() == 0;
     }
 
-    public void showUsing(Consumer<IShape> consumer)
+    public void readShapesUsing(Consumer<IShape> consumer)
     {
         for(IShape shape : shapes)
         {

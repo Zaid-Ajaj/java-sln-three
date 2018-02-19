@@ -62,7 +62,7 @@ public class Rectangle implements IShape, Comparable<IShape>
     @Override
     public String toString()
     {
-        return "Rectangle(X= " + x + ", Y=" + y + ", Height=" + height + ", Width" + width + ")";
+        return "Rectangle(X=" + x + ", Y=" + y + ", Height=" + height + ", Width=" + width + ")";
     } 
 
 }

@@ -9,7 +9,7 @@ public class ShapeListEditor
 
     public ShapeListEditor()
     {
-        shapeList = new ShapeList();
+        shapeList = new ShapeList(10);
         scanner = new Scanner(System.in);
         stopped = false;
     }
@@ -27,17 +27,17 @@ public class ShapeListEditor
         return "";
     } 
 
-    /**  Safely parses integers from an input string, returning empty value when parsing failes. */
-    public OptionalInt parseInt(String input)
+    /**  Safely parses doubles from an input string, returning an empty value when parsing failes. */
+    public OptionalDouble parseDouble(String input)
     {
         try 
         {
-            int result = Integer.parseInt(input);
-            return OptionalInt.of(result);
+            double result = Double.parseDouble(input);
+            return OptionalDouble.of(result);
         }
         catch (Exception ex)
         {
-            return OptionalInt.empty();
+            return OptionalDouble.empty();
         }
     }
 
@@ -51,11 +51,13 @@ public class ShapeListEditor
         System.out.print(input);
     }
 
-    public void stop()
+    /** Stops the editor loop */
+    public void quit()
     {
         stopped = true;
     }
 
+    /** Shows the user what commands are possible */
     private void showWelcomeMessages()
     {
         writeLn("Welcome to the shape list editor.");
@@ -76,7 +78,8 @@ public class ShapeListEditor
         writeLn("");
     }
 
-    public Optional<Tuple<String, int[]>> parseCommand(String input)
+    /** Safely parses the input string of the user into a structured command with it's name and arguments */
+    public Optional<Command> parseCommand(String input)
     {
         String[] parts = input.split(" ");
 
@@ -102,8 +105,8 @@ public class ShapeListEditor
             {
                 // no-argument command has 0 arguments 
                 writeLn("Found single argument");
-                int[] args = { };
-                return Optional.of(new Tuple(command, args));
+                double[] args = { };
+                return Optional.of(new Command(command, args));
             }
             else
             {
@@ -121,20 +124,21 @@ public class ShapeListEditor
             // multi-parameter command
             String command = parts[0];
             // if the command entered is not one of the possible commands
-            if (!Arrays.stream(possibleCmds).noneMatch(cmd -> cmd.equalsIgnoreCase(command)))
+            if (Arrays.stream(possibleCmds).noneMatch(cmd -> cmd.equalsIgnoreCase(command)))
             {
-                writeLn("The command you entered was not recognized");
+                // then parsing should fail
+                writeLn("The command you entered was not recognized as one of the possible commands");
                 return Optional.empty();
             }
 
-            int[] arguments = Arrays.stream(parts)
-                                    .skip(1)
-                                    .map(arg -> parseInt(arg))
-                                    .filter(optArg -> optArg.isPresent())
-                                    .mapToInt(optArg -> optArg.getAsInt())
-                                    .toArray();
+            double[] arguments = 
+                Arrays.stream(parts)                               // create a stream of strings
+                      .skip(1)                                     // skip the command name
+                      .map(arg -> parseDouble(arg))                // try parse each part
+                      .filter(optArg -> optArg.isPresent())        // filter the successfully parsed 
+                      .mapToDouble(optArg -> optArg.getAsDouble()) // retrieve parsed values  
+                      .toArray();                                  // turn them into an array
                                     
-
             if (command == "circle" && arguments.length != 3)
             {
                 writeLn("The circle command requires three parameters as integers");
@@ -159,10 +163,68 @@ public class ShapeListEditor
                 return Optional.empty();
             }
 
-            return Optional.of(new Tuple(command, arguments));
+            return Optional.of(new Command(command, arguments));
         }
     }
 
+    /** Shows the elements of the shape list to the user, if any. */
+    private void show()
+    {
+        if (shapeList.isEmpty())
+        {
+            writeLn("Shape list is empty");
+        }
+        else
+        {
+            writeLn("Shape list contains:");
+            shapeList.readShapesUsing(shape -> writeLn(" |-- " + shape.toString()));
+            writeLn("");
+        }
+    }
+
+    /** Handles the circle command along with it's arguments */
+    private void handleCircle(double x, double y, double radius)
+    {
+        if (shapeList.isFull())
+        {
+            writeLn("Cannot add new circle: shape list is full.");
+            return;
+        }
+
+        Optional<Circle> addedCircle = shapeList.addCircle(x, y, radius);
+        if (!addedCircle.isPresent())
+        {
+            writeLn("Error while adding a new circle: input was invalid");
+        }
+        else
+        {
+            Circle circle = addedCircle.get();
+            writeLn(circle.toString() + " was added");
+        }
+    }
+
+    /** Handles the rectangle command along with it's arguments */
+    private void handleRectangle(double x, double y, double height, double width)
+    {
+        if (shapeList.isFull())
+        {
+            writeLn("Cannot add new rectangle: shape list is full.");
+            return;
+        }
+
+        Optional<Rectangle> addedRectangle = shapeList.addRectangle(x, y, height, width);
+        if (!addedRectangle.isPresent())
+        {
+            writeLn("Error while adding a new rectangle: input was invalid");
+        }
+        else
+        {
+            Rectangle rectangle = addedRectangle.get();
+            writeLn(rectangle.toString() + " was added");
+        }
+    }
+    
+     /** Starts the editor as an application loop, reading and handling commands and stops when the quit command is recieved */
     public void start()
     {   
         showWelcomeMessages();
@@ -170,29 +232,58 @@ public class ShapeListEditor
         while (!stopped)
         {
             String input = readUserInput("Command: ");
-            Optional<Tuple<String, int[]>> parsedCommand = parseCommand(input);
+            Optional<Command> parsedCommand = parseCommand(input);
 
             if (!parsedCommand.isPresent())
             {
                 continue;
             }
 
-            String command = parsedCommand.get().x;
-            int[] args = parsedCommand.get().y;
+            String command = parsedCommand.get().name;
+            double[] args = parsedCommand.get().arguments;
 
             if (command.equalsIgnoreCase("quit")) 
             {
-                stop();
+                quit();
                 continue;
             }
 
             if (command.equalsIgnoreCase("show"))
             {
-                writeLn("Shape list contains:");
-                shapeList.showUsing(shape -> writeLn(" |-- " + shape.toString()));
+                show();
                 continue;
             }
 
+            if (command.equalsIgnoreCase("circle"))
+            {
+                double xCoordinate = args[0];
+                double yCoordinate = args[1];
+                double radius = args[2];
+                handleCircle(xCoordinate, xCoordinate, radius);
+                continue;
+            }
+
+            if (command.equalsIgnoreCase("rectangle"))
+            {
+                double xCoordinate = args[0];
+                double yCoordinate = args[1];
+                double height = args[2];
+                double width = args[3];
+                handleRectangle(xCoordinate, yCoordinate, height, width);
+                continue;
+            }
+
+            if (command.equalsIgnoreCase("remove"))
+            {
+
+                continue;
+            }
+
+            if (command.equalsIgnoreCase("move"))
+            {
+
+                continue;
+            }
         }
 
         writeLn("Finished editing the shape list");

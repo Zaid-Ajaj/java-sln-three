@@ -63,6 +63,6 @@ public class Circle implements IShape, Comparable<IShape>
     @Override
     public String toString()
     {
-        return "Cirlce(X=" + x + ", Y= " + y + ", Radius = " + radius + ")";
+        return "Cirlce(X=" + x + ", Y=" + y + ", Radius=" + radius + ")";
     } 
 }
