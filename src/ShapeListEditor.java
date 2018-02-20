@@ -3,8 +3,8 @@ import java.util.*;
 
 /** Uses the terminal as a user interface to manipulate a list of shapes by reading different commands from the user 
  * 
- * @author Zaid Ajaj
- * @author Luna Schernthaner 
+ * @author Zaid Ajaj - s4807561
+ * @author Luna-Elise Schernthaner - s4703928
  */
 public class ShapeListEditor
 {

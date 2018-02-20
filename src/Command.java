@@ -5,8 +5,8 @@ import java.util.*;
  * A Command represent a function provided by the user that has a name and a list of arguments
  * In our case, the arguments are a list of double values
  * 
- * @author Zaid Ajaj
- * @author Luna Schernthaner 
+ * @author Zaid Ajaj - s4807561
+ * @author Luna-Elise Schernthaner - s4703928 
  */
 public class Command 
 { 

@@ -2,8 +2,8 @@ import java.lang.*;
 
 /** Represents a circle shape 
  * 
- * @author Zaid Ajaj
- * @author Luna Schernthaner
+ * @author Zaid Ajaj - s4807561
+ * @author Luna-Elise Schernthaner - s4703928 
  */
 public class Circle implements IShape, Comparable<IShape> 
 {

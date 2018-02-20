@@ -5,22 +5,10 @@ public class Runner
 {
     public static void main(String[] args)
     {
-        Test.Case("parse double works", () -> 
-        {
-            ShapeListEditor editor = new ShapeListEditor();
-            OptionalDouble result = editor.parseDouble("1.0");
-            Test.AreEqual(true, result.isPresent(), "parsing works for 1.0");
-            Test.AreEqual(1.0, result.getAsDouble(), "The value of double is correct for 1.0");
-
-            result = editor.parseDouble("1");
-            Test.AreEqual(true, result.isPresent(), "parsing works for 1");
-            Test.AreEqual(1.0, result.getAsDouble(), "The value of double is correct for 1");
-        });
-
         Test.Case("parse command works correctly for single argument 'show'", () -> 
         {   
-            ShapeListEditor editor = new ShapeListEditor();
-            Optional<Command> parsed = editor.parseCommand("show");
+            Tuple<Optional<Command>, String> parsedResult = Command.tryParse("show");
+            Optional<Command> parsed = parsedResult.value;
 
             Test.AreEqual(true, parsed.isPresent(), "The result has a value");
             Test.AreEqual(parsed.get().name, "show", "The parsed command is correct");
@@ -29,9 +17,8 @@ public class Runner
 
         Test.Case("parse command works correctly for single argument 'quit'", () -> 
         {   
-            ShapeListEditor editor = new ShapeListEditor();
-            Optional<Command> parsed = editor.parseCommand("quit");
-
+            Tuple<Optional<Command>, String> parsedResult = Command.tryParse("quit");
+            Optional<Command> parsed = parsedResult.value;
             Test.AreEqual(true, parsed.isPresent(), "The result has a value");
             Test.AreEqual(parsed.get().name, "quit", "The parsed command is correct");
             Test.AreEqual(parsed.get().arguments.length, 0, "The parsed arguments have length 0");
@@ -39,8 +26,8 @@ public class Runner
 
         Test.Case("parse command works correctly for multi-argument command 'circle'", () -> 
         {   
-            ShapeListEditor editor = new ShapeListEditor();
-            Optional<Command> parsed = editor.parseCommand("circle 1.0 2.0 3.0");
+            Tuple<Optional<Command>, String> parsedResult = Command.tryParse("circle 1.0 2.0 3.0");
+            Optional<Command> parsed = parsedResult.value;
 
             Test.AreEqual(true, parsed.isPresent(), "The result has a value");
             Test.AreEqual(parsed.get().name, "circle", "The parsed command is correct");

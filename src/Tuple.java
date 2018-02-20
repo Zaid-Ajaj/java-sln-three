@@ -1,4 +1,6 @@
-/** An ad-hoc implementation of the Either datatype as a tuple container. It holds two values representing a value of success of type `TVal` or an error of some type `TError`  */
+/** An ad-hoc implementation of the Either datatype as a tuple container. It holds two values representing a value of success of type `TVal` or an error of some type `TError`  
+ * @author Zaid Ajaj
+ */
 public class Tuple<TVal, TError> 
 { 
     public final TVal value; 

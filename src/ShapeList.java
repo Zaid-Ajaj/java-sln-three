@@ -2,6 +2,12 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.lang.*;
 
+/**
+ * Contains logic for manipulating shapes inside a list 
+ * 
+ * @author Zaid Ajaj - s4807561
+ * @author Luna-Elise Schernthaner - s4703928
+ */
 public class ShapeList
 {
     private List<IShape> shapes;

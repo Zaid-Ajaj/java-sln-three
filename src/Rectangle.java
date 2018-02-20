@@ -1,7 +1,7 @@
 /** Represents a rectangle shape 
  * 
- * @author Zaid Ajaj
- * @author Luna Schernthaner
+ * @author Zaid Ajaj - s4807561
+ * @author Luna-Elise Schernthaner - s4703928
  */
 public class Rectangle implements IShape, Comparable<IShape> 
 {
