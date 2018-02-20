@@ -245,6 +245,23 @@ public class ShapeListEditor
                     show();
                     continue;
                 }
+                else
+                {
+                    if (args[0] == 1.0)
+                    {
+                        // sort by x
+                        shapeList.sortByLeftBorder();
+                        show();
+                        continue;
+                    }
+                    else 
+                    {
+                        // sort by y
+                        shapeList.sortByBottomBorder();
+                        show();
+                        continue;
+                    }
+                }
             }
         }
 

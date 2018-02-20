@@ -70,13 +70,15 @@ public class Command
           // x => 1.0
           // y => -1.0 
           // because the arguments are of type double[]
-          if (parts[1] == "x")
+          if (parts[1].equalsIgnoreCase("x"))
           {
+            errorMessage = "";
             double[] args = { 1.0 };
             return Result.create(Optional.of(new Command("sort", args)), Error.of(errorMessage));
           }
-          else if (parts[1] == "y")
+          else if (parts[1].equalsIgnoreCase("y"))
           {
+            errorMessage = "";
             double[] args = { -1.0 };
             return Result.create(Optional.of(new Command("sort", args)), Error.of(errorMessage));
           }

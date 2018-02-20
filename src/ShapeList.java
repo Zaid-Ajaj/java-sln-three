@@ -121,6 +121,40 @@ public class ShapeList
         shapes = List.of(shapesArray);
     }
 
+    public void sortByLeftBorder()
+    {
+        IShape[] shapesArray = new IShape[shapes.size()];
+        shapes.toArray(shapesArray);
+        
+        Arrays.sort(shapesArray, new Comparator<IShape>() {
+            @Override
+            public int compare(IShape a, IShape b) {
+                return  a.LeftBorder() > b.LeftBorder() ? 1
+                     :  a.LeftBorder() < b.LeftBorder() ? -1
+                     :  0;
+            }
+        });
+        
+        shapes = List.of(shapesArray);
+    }
+
+    public void sortByBottomBorder()
+    {
+        IShape[] shapesArray = new IShape[shapes.size()];
+        shapes.toArray(shapesArray);
+        
+        Arrays.sort(shapesArray, new Comparator<IShape>() {
+            @Override
+            public int compare(IShape a, IShape b) {
+                return a.BottomBorder() > b.BottomBorder() ? 1
+                    :  a.BottomBorder() < b.BottomBorder() ? -1
+                    :  0;
+            }
+        });
+        
+        shapes = List.of(shapesArray);
+    }
+
     /** Allows a read-only consumer to read the string representation of a shape
      * Therefore, forbidding the outside world from mutating the values of the shapes
      */
