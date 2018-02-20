@@ -113,6 +113,14 @@ public class ShapeList
         return shapes.size() == 0;
     }
 
+    public void sortByArea()
+    {
+        IShape[] shapesArray = new IShape[shapes.size()];
+        shapes.toArray(shapesArray);
+        Arrays.sort(shapesArray);
+        shapes = List.of(shapesArray);
+    }
+
     /** Allows a read-only consumer to read the string representation of a shape
      * Therefore, forbidding the outside world from mutating the values of the shapes
      */

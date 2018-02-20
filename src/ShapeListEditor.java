@@ -50,6 +50,7 @@ public class ShapeListEditor
         stopped = true;
     }
 
+    /** Returns whether or not the editing session has finished */
     public boolean finishedEditing()
     {
         return stopped;
@@ -85,6 +86,7 @@ public class ShapeListEditor
         }
         else
         {
+            writeLn("");
             writeLn("Shape list contains:");
             shapeList.readShapesUsing(shape -> writeLn(" |-- " + shape));
             writeLn("");
@@ -232,6 +234,17 @@ public class ShapeListEditor
                 handleMove(index, deltaX, deltaY);
                 show();
                 continue;
+            }
+
+            if (command.equalsIgnoreCase("sort"))
+            {
+                if (args.length == 0)
+                {
+                    // sorting by area
+                    shapeList.sortByArea();
+                    show();
+                    continue;
+                }
             }
         }
 

@@ -49,8 +49,9 @@ public class Command
         else if (parts.length == 1)
         {
            String commandName = parts[0];
-           // the only commands without paramters are 'show' and 'quit'
-           if (commandName.equalsIgnoreCase("show") || commandName.equalsIgnoreCase("quit"))
+           // the only commands without paramters are 'show', 'quit' and 'sort'
+           String[] validCommands = { "show", "quit", "sort" };
+           if (Arrays.stream(validCommands).anyMatch(cmd -> cmd.equalsIgnoreCase(commandName)))
            {
               // no-argument command has 0 arguments 
               double[] emptyArguments = { };
@@ -59,13 +60,31 @@ public class Command
            }
            else
            {
-              errorMessage = "The single argument command you entered was not recognized";
+              errorMessage = "Only commands {show, sort, quit} are recognised as zero-argument command.";
               return Result.create(Optional.empty(), Error.of(errorMessage));
            }
        }
        else if (parts.length == 2 && parts[0].equalsIgnoreCase("sort"))
        {
+          // optional argument is present for sort
+          // x => 1.0
+          // y => -1.0 
+          // because the arguments are of type double[]
+          if (parts[1] == "x")
+          {
+            double[] args = { 1.0 };
+            return Result.create(Optional.of(new Command("sort", args)), Error.of(errorMessage));
+          }
+          else if (parts[1] == "y")
+          {
+            double[] args = { -1.0 };
+            return Result.create(Optional.of(new Command("sort", args)), Error.of(errorMessage));
+          }
+          else
+          {
+            errorMessage = "command sort does not recognize the optional argument " + parts[1];
             return Result.create(Optional.empty(), Error.of(errorMessage));
+          }
        }
        else
        {
@@ -88,31 +107,31 @@ public class Command
                       .mapToDouble(optArg -> optArg.getAsDouble()) // retrieve parsed values  
                       .toArray();                                  // turn them into an array
                                   
-            if (command == "circle" && arguments.length != 3)
+            if (command.equalsIgnoreCase("circle") && arguments.length != 3)
             {
               errorMessage = "The circle command requires three parameters as valid numbers";
               return Result.create(Optional.empty(), Error.of(errorMessage));
             }
 
-            if (command == "rectangle" && arguments.length != 4)
+            if (command.equalsIgnoreCase("rectangle") && arguments.length != 4)
             {
               errorMessage = "The rectangle command requires four parameters as valid numbers";
               return Result.create(Optional.empty(), Error.of(errorMessage));
             }
 
-            if (command == "move" && arguments.length != 3)
+            if (command.equalsIgnoreCase("move") && arguments.length != 3)
             {
               errorMessage = "The move command requires three parameters as valid numbers";
               return Result.create(Optional.empty(), Error.of(errorMessage));
             }
 
-            if (command == "remove" && arguments.length != 1) 
+            if (command.equalsIgnoreCase("remove") && arguments.length != 1) 
             {
               errorMessage = "The remove command requires one parameter as a valid number";
               return Result.create(Optional.empty(), Error.of(errorMessage));
             }
 
-            if (command == "remove" && arguments.length == 1)
+            if (command.equalsIgnoreCase("remove") && arguments.length == 1)
             {
                 double shapeIndex = arguments[0];
                 boolean shapeIndexIsWholeNumber = Math.floor(shapeIndex) == shapeIndex;
@@ -124,8 +143,8 @@ public class Command
             }
           
             errorMessage = "";
-            Command parserCommand = new Command(command, arguments);
-            return Result.create(Optional.of(parserCommand), Error.of(errorMessage));
+            Command parsedCommand = new Command(command, arguments);
+            return Result.create(Optional.of(parsedCommand), Error.of(errorMessage));
        }
     } 
 }
