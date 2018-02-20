@@ -41,6 +41,7 @@ public class Rectangle implements IShape, Comparable<IShape>
         return y;
     }
 
+    /** Compares the area of this shape to another */
     public int compareTo(IShape otherShape)
     {
         double rectangleArea = Area();

@@ -12,7 +12,7 @@ public class Test
     {
         if (hasFailed)
         {
-            throw new Error("One or more assertions has failed");
+            throw new RuntimeException("One or more assertions has failed");
         }
     }
 

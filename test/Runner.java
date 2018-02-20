@@ -7,7 +7,7 @@ public class Runner
     {
         Test.Case("parse command works correctly for single argument 'show'", () -> 
         {   
-            Tuple<Optional<Command>, String> parsedResult = Command.tryParse("show");
+            Result<Optional<Command>> parsedResult = Command.tryParse("show");
             Optional<Command> parsed = parsedResult.value;
 
             Test.AreEqual(true, parsed.isPresent(), "The result has a value");
@@ -17,7 +17,7 @@ public class Runner
 
         Test.Case("parse command works correctly for single argument 'quit'", () -> 
         {   
-            Tuple<Optional<Command>, String> parsedResult = Command.tryParse("quit");
+            Result<Optional<Command>> parsedResult = Command.tryParse("quit");
             Optional<Command> parsed = parsedResult.value;
             Test.AreEqual(true, parsed.isPresent(), "The result has a value");
             Test.AreEqual(parsed.get().name, "quit", "The parsed command is correct");
@@ -26,7 +26,7 @@ public class Runner
 
         Test.Case("parse command works correctly for multi-argument command 'circle'", () -> 
         {   
-            Tuple<Optional<Command>, String> parsedResult = Command.tryParse("circle 1.0 2.0 3.0");
+            Result<Optional<Command>> parsedResult = Command.tryParse("circle 1.0 2.0 3.0");
             Optional<Command> parsed = parsedResult.value;
 
             Test.AreEqual(true, parsed.isPresent(), "The result has a value");

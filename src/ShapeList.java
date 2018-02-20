@@ -72,19 +72,37 @@ public class ShapeList
     }
 
     /** Safely removes a shape from the list at index i, returns an optional string representing whether there was an error or not */
-    public Optional<String> removeShapeAtIndex(int i)
+    public Optional<Error> removeShapeAtIndex(int i)
     {
         if (this.shapes.size() == 0) 
         {
-            return Optional.of("The list is already empty");
+            return Optional.of(Error.of("The list is already empty"));
         }
         else if (i < 0 || i >= this.shapes.size())
         {
-            return Optional.of("The input index lies outside the bounds of the shape list");
+            return Optional.of(Error.of("The input index lies outside the bounds of the shape list"));
         }
         else
         {
             this.shapes.remove(i);
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Error> moveShapeAtIndex(int i, double deltaX, double deltaY)
+    {
+        if (this.shapes.size() == 0) 
+        {
+            return Optional.of(Error.of("The list is already empty"));
+        }
+        else if (i < 0 || i >= this.shapes.size())
+        {
+            return Optional.of(Error.of("The input index lies outside the bounds of the shape list"));
+        }
+        else
+        {
+            IShape shape = this.shapes.get(i);
+            shape.Move(deltaX ,deltaY);
             return Optional.empty();
         }
     }

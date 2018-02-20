@@ -132,6 +132,31 @@ public class ShapeListEditor
             writeLn(rectangle.toString() + " was added");
         }
     }
+
+    /** Handles the remove command along with it's arguments */
+    private void handleRemove(int index)
+    {
+        Optional<Error> optError = shapeList.removeShapeAtIndex(index);
+                
+        if (optError.isPresent())
+        {
+            Error error = optError.get();
+            String errorMessage = error.message;
+            writeLn("Error while removing a shape from the list: " + errorMessage);
+        }
+    }
+
+    private void handleMove(int index, double deltaX, double deltaY)
+    {
+        Optional<Error> optError = shapeList.moveShapeAtIndex(index, deltaX, deltaY);
+                
+        if (optError.isPresent())
+        {
+            Error error = optError.get();
+            String errorMessage = error.message;
+            writeLn("Error while moving the shape: " + errorMessage);
+        }
+    }
     
      /** Starts the editor as an application loop, reading and handling commands and stops when the quit command is recieved */
     public void start()
@@ -141,18 +166,20 @@ public class ShapeListEditor
         while (!finishedEditing())
         {
             String input = readUserInput("Command: ");
-            Tuple<Optional<Command>, String> parsedResult = Command.tryParse(input);
+            Result<Optional<Command>> parsedResult = Command.tryParse(input);
             
             Optional<Command> parsedCommand = parsedResult.value;
-            String parseError = parsedResult.error;
+            Error parseError = parsedResult.error;
 
-
+            // if parsing did not succeed
             if (!parsedCommand.isPresent())
             {
-                writeLn(parseError);
+                // then show the parse error
+                writeLn(parseError.message);
                 continue;
             }
 
+            // parsing was successful, get() the parsed command
             String command = parsedCommand.get().name;
             double[] args = parsedCommand.get().arguments;
 
@@ -174,6 +201,7 @@ public class ShapeListEditor
                 double yCoordinate = args[1];
                 double radius = args[2];
                 handleCircle(xCoordinate, xCoordinate, radius);
+                show();
                 continue;
             }
 
@@ -184,20 +212,15 @@ public class ShapeListEditor
                 double height = args[2];
                 double width = args[3];
                 handleRectangle(xCoordinate, yCoordinate, height, width);
+                show();
                 continue;
             }
 
             if (command.equalsIgnoreCase("remove"))
             {
                 int index = (int)args[0];
-                
-                Optional<String> error = shapeList.removeShapeAtIndex(index);
-                
-                if (error.isPresent())
-                {
-                    writeLn("Error while removing a shape from the list: " + error);
-                }
-
+                handleRemove(index);
+                show();
                 continue;
             }
 
@@ -206,7 +229,8 @@ public class ShapeListEditor
                 int index = (int)args[0];
                 double deltaX = args[1];
                 double deltaY = args[2];
-
+                handleMove(index, deltaX, deltaY);
+                show();
                 continue;
             }
         }
