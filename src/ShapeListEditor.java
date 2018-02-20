@@ -109,8 +109,7 @@ public class ShapeListEditor
         }
         else
         {
-            Circle circle = addedCircle.get();
-            writeLn(circle.toString() + " was added");
+            show();
         }
     }
 
@@ -130,8 +129,7 @@ public class ShapeListEditor
         }
         else
         {
-            Rectangle rectangle = addedRectangle.get();
-            writeLn(rectangle.toString() + " was added");
+            show();
         }
     }
 
@@ -146,6 +144,10 @@ public class ShapeListEditor
             String errorMessage = error.message;
             writeLn("Error while removing a shape from the list: " + errorMessage);
         }
+        else
+        {
+            show();
+        }
     }
 
     private void handleMove(int index, double deltaX, double deltaY)
@@ -157,6 +159,10 @@ public class ShapeListEditor
             Error error = optError.get();
             String errorMessage = error.message;
             writeLn("Error while moving the shape: " + errorMessage);
+        }
+        else
+        {
+            show();
         }
     }
     
@@ -203,7 +209,6 @@ public class ShapeListEditor
                 double yCoordinate = args[1];
                 double radius = args[2];
                 handleCircle(xCoordinate, xCoordinate, radius);
-                show();
                 continue;
             }
 
@@ -214,7 +219,6 @@ public class ShapeListEditor
                 double height = args[2];
                 double width = args[3];
                 handleRectangle(xCoordinate, yCoordinate, height, width);
-                show();
                 continue;
             }
 
@@ -222,7 +226,6 @@ public class ShapeListEditor
             {
                 int index = (int)args[0];
                 handleRemove(index);
-                show();
                 continue;
             }
 
@@ -232,7 +235,6 @@ public class ShapeListEditor
                 double deltaX = args[1];
                 double deltaY = args[2];
                 handleMove(index, deltaX, deltaY);
-                show();
                 continue;
             }
 
