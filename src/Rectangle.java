@@ -1,3 +1,8 @@
+/** Represents a rectangle shape 
+ * 
+ * @author Zaid Ajaj
+ * @author Luna Schernthaner
+ */
 public class Rectangle implements IShape, Comparable<IShape> 
 {
     private double x, y, height, width = 0.0;
@@ -10,6 +15,7 @@ public class Rectangle implements IShape, Comparable<IShape>
         this.width = width;
     }
 
+    /** Returns the area of the rectangle */
     public double Area() 
     {
         return height * width;

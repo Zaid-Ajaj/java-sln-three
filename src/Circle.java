@@ -1,5 +1,10 @@
 import java.lang.*;
 
+/** Represents a circle shape 
+ * 
+ * @author Zaid Ajaj
+ * @author Luna Schernthaner
+ */
 public class Circle implements IShape, Comparable<IShape> 
 {
     private double x, y, radius = 0.0;
@@ -11,6 +16,7 @@ public class Circle implements IShape, Comparable<IShape>
         this.radius = radius;
     }
 
+    /** Returns the area of the circle */
     public double Area()
     {
         return Math.PI * radius * radius;

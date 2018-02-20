@@ -65,6 +65,7 @@ public class ShapeList
         }
     }
 
+    /** Safely removes a shape from the list at index i, returns an optional string representing whether there was an error or not */
     public Optional<String> removeShapeAtIndex(int i)
     {
         if (this.shapes.size() == 0) 
@@ -82,16 +83,20 @@ public class ShapeList
         }
     }
 
+    /** Returns whether or not the shape list is empty */
     public boolean isEmpty()
     {
         return shapes.size() == 0;
     }
 
-    public void readShapesUsing(Consumer<IShape> consumer)
+    /** Allows a read-only consumer to read the string representation of a shape
+     * Therefore, forbidding the outside world from mutating the values of the shapes
+     */
+    public void readShapesUsing(Consumer<String> consumer)
     {
         for(IShape shape : shapes)
         {
-            consumer.accept(shape);
+            consumer.accept(shape.toString());
         }
     }
 }

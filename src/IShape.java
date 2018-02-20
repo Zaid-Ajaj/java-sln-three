@@ -1,3 +1,4 @@
+/** Defines common shape operations  */
 public interface IShape
 {
     double Area();

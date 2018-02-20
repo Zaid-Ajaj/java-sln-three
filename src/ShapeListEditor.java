@@ -1,6 +1,11 @@
 import java.lang.*;
 import java.util.*;
 
+/** Uses the terminal as a user interface to manipulate a list of shapes by reading different commands from the user 
+ * 
+ * @author Zaid Ajaj
+ * @author Luna Schernthaner 
+ */
 public class ShapeListEditor
 {
     private ShapeList shapeList;
@@ -27,19 +32,7 @@ public class ShapeListEditor
         return "";
     } 
 
-    /**  Safely parses doubles from an input string, returning an empty value when parsing failes. */
-    public OptionalDouble parseDouble(String input)
-    {
-        try 
-        {
-            double result = Double.parseDouble(input);
-            return OptionalDouble.of(result);
-        }
-        catch (Exception ex)
-        {
-            return OptionalDouble.empty();
-        }
-    }
+
 
     void writeLn(String input)
     {
@@ -55,6 +48,11 @@ public class ShapeListEditor
     public void quit()
     {
         stopped = true;
+    }
+
+    public boolean finishedEditing()
+    {
+        return stopped;
     }
 
     /** Shows the user what commands are possible */
@@ -78,95 +76,6 @@ public class ShapeListEditor
         writeLn("");
     }
 
-    /** Safely parses the input string of the user into a structured command with it's name and arguments */
-    public Optional<Command> parseCommand(String input)
-    {
-        String[] parts = input.split(" ");
-
-        Arrays.stream(parts).forEach(part -> writeLn("'" + part + "'"));
-        
-        if (parts.length == 0)
-        {
-            // empty input
-            writeLn("Your input was empty");
-            return Optional.empty();
-        }
-        else if (parts.length == 1 && parts[0] == "")
-        {
-            // empty input
-            writeLn("Your input was empty");
-            return Optional.empty();
-        }
-        else if (parts.length == 1)
-        {
-            String command = parts[0];
-            // the only commands without paramters are 'show' and 'quit'
-            if (command.equalsIgnoreCase("show") || command.equalsIgnoreCase("quit"))
-            {
-                // no-argument command has 0 arguments 
-                writeLn("Found single argument");
-                double[] args = { };
-                return Optional.of(new Command(command, args));
-            }
-            else
-            {
-                writeLn("The single argument command you entered was not recognized");
-                return Optional.empty();
-            }
-        }
-        else if (parts.length == 2 && parts[0].equalsIgnoreCase("sort"))
-        {
-            return Optional.empty();
-        }
-        else
-        {
-            String[] possibleCmds = { "circle", "rectangle", "move", "remove" };
-            // multi-parameter command
-            String command = parts[0];
-            // if the command entered is not one of the possible commands
-            if (Arrays.stream(possibleCmds).noneMatch(cmd -> cmd.equalsIgnoreCase(command)))
-            {
-                // then parsing should fail
-                writeLn("The command you entered was not recognized as one of the possible commands");
-                return Optional.empty();
-            }
-
-            double[] arguments = 
-                Arrays.stream(parts)                               // create a stream of strings
-                      .skip(1)                                     // skip the command name
-                      .map(arg -> parseDouble(arg))                // try parse each part
-                      .filter(optArg -> optArg.isPresent())        // filter the successfully parsed 
-                      .mapToDouble(optArg -> optArg.getAsDouble()) // retrieve parsed values  
-                      .toArray();                                  // turn them into an array
-                                    
-            if (command == "circle" && arguments.length != 3)
-            {
-                writeLn("The circle command requires three parameters as integers");
-                return Optional.empty();
-            }
-
-            if (command == "rectangle" && arguments.length != 4)
-            {
-                writeLn("The rectangle command requires four parameters as integers");
-                return Optional.empty();
-            }
-
-            if (command == "move" && arguments.length != 3)
-            {
-                writeLn("The move command requires three parameters as integers");
-                return Optional.empty();
-            }
-
-            if (command == "remove" && arguments.length != 1) 
-            {
-                writeLn("The remove command requires one parameter as an integer");
-                return Optional.empty();
-            }
-
-            return Optional.of(new Command(command, arguments));
-        }
-    }
-
     /** Shows the elements of the shape list to the user, if any. */
     private void show()
     {
@@ -177,7 +86,7 @@ public class ShapeListEditor
         else
         {
             writeLn("Shape list contains:");
-            shapeList.readShapesUsing(shape -> writeLn(" |-- " + shape.toString()));
+            shapeList.readShapesUsing(shape -> writeLn(" |-- " + shape));
             writeLn("");
         }
     }
@@ -229,13 +138,18 @@ public class ShapeListEditor
     {   
         showWelcomeMessages();
 
-        while (!stopped)
+        while (!finishedEditing())
         {
             String input = readUserInput("Command: ");
-            Optional<Command> parsedCommand = parseCommand(input);
+            Tuple<Optional<Command>, String> parsedResult = Command.tryParse(input);
+            
+            Optional<Command> parsedCommand = parsedResult.value;
+            String parseError = parsedResult.error;
+
 
             if (!parsedCommand.isPresent())
             {
+                writeLn(parseError);
                 continue;
             }
 
@@ -275,12 +189,23 @@ public class ShapeListEditor
 
             if (command.equalsIgnoreCase("remove"))
             {
+                int index = (int)args[0];
+                
+                Optional<String> error = shapeList.removeShapeAtIndex(index);
+                
+                if (error.isPresent())
+                {
+                    writeLn("Error while removing a shape from the list: " + error);
+                }
 
                 continue;
             }
 
             if (command.equalsIgnoreCase("move"))
             {
+                int index = (int)args[0];
+                double deltaX = args[1];
+                double deltaY = args[2];
 
                 continue;
             }
