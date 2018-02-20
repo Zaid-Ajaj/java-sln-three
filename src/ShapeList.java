@@ -44,7 +44,9 @@ public class ShapeList
                           && height != Double.NaN
                           && width != Double.NaN
                           && height >= 0
-                          && width >= 0;
+                          && width >= 0
+                          && !isFull();
+                          
         if (!inputValid) 
         {
             return Optional.empty();
@@ -59,7 +61,7 @@ public class ShapeList
 
     public Optional<Circle> addCircle(double x, double y, double radius)
     {
-        if (radius < 0 || x == Double.NaN || y == Double.NaN || radius == Double.NaN) 
+        if (radius < 0 || x == Double.NaN || y == Double.NaN || radius == Double.NaN || isFull()) 
         {
             return Optional.empty();
         }
